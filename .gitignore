@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+# Virtual environments
+venv/
+.venv/
+env/
+# Secrets
+.env
+.env.*
+!.env.example
+# Databases and backups
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+*.bak
+data.json
+# Django generated
+staticfiles/
+# Uploaded media (kept on the Railway Volume; bundled seed images stay in media_seed/)
+media/
+!media_seed/
+# Logs and OS/editor files
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

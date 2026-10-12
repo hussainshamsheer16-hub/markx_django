@@ -1,0 +1,18 @@
+{% extends "store/base.html" %}{% load mx %}
+{% block title %}Order received | MarkX Collections{% endblock %}
+{% block content %}
+<section class="section"><div class="container" style="max-width:820px">
+  <div style="text-align:center;margin-bottom:34px"><div class="success-ring"><i class="fa-solid fa-check"></i></div><h1 style="font-size:clamp(2.4rem,6vw,4rem);margin:18px 0 10px">Order <em style="color:var(--accent-deep);font-style:italic">received</em></h1><p class="lede" style="margin:0 auto">Thanks, {{ order.full_name }}!{% if order.payment_method == 'cod' %} We'll contact you to confirm your cash-on-delivery order.{% elif order.payment_method == 'raast' and order.payment_confirmed %} Your Raast payment is verified and your order is confirmed.{% elif order.payment_method == 'raast' %} Your order stays pending until we verify your Raast payment.{% elif order.status == 'confirmed' %} Your card payment is confirmed. We'll contact you about delivery.{% else %} Your card payment is being verified. We'll update your order shortly.{% endif %}</p></div>
+  <div class="invoice">
+    <div class="invoice-head"><div><b style="font-family:var(--font-display);font-size:1.6rem">INVOICE</b><div class="admin-sub">{{ order.number }}</div></div><div style="text-align:right"><div class="admin-sub">{{ order.created|date:"d M Y, H:i" }}</div><span class="tag tag-accent">{{ order.get_status_display }}</span></div></div>
+    <table><thead><tr><th>Item</th><th>Size</th><th>Qty</th><th style="text-align:right">Total</th></tr></thead><tbody>{% for i in order.items.all %}<tr><td><div class="order-success-product">{% if i.product and i.product.image %}<img src="{{ i.product.image.url }}" alt="{{ i.name }}">{% endif %}<span>{{ i.name }} <small>({{ i.color }})</small></span></div></td><td>{{ i.size }}</td><td>{{ i.qty }}</td><td style="text-align:right">{{ i.line_total|money }}</td></tr>{% endfor %}</tbody></table>
+    <div class="sum-row"><span>Subtotal</span><span>{{ order.subtotal|money }}</span></div>
+    {% if order.discount %}<div class="sum-row discount"><span>Discount</span><span>− {{ order.discount|money }}</span></div>{% endif %}
+    <div class="sum-row"><span>Delivery</span><span>{% if order.delivery %}{{ order.delivery|money }}{% else %}FREE{% endif %}</span></div>
+    <div class="sum-row total"><span>Total ({{ order.get_payment_method_display }})</span><span>{{ order.total|money }}</span></div>
+    <p class="admin-sub" style="margin-top:18px">Deliver to: {{ order.address }}, {{ order.city }}</p>
+    {% if order.payment_method == 'raast' %}<div class="admin-sub" style="margin-top:14px">{% if raast_iban %}Raast transfer details: {{ raast_account_title }} · {{ raast_iban }}{% else %}Our team will contact you with Raast payment details.{% endif %}</div>{% endif %}
+  </div>
+  <div style="text-align:center;margin-top:28px"><a href="{% url 'store:shop' %}" class="btn btn-accent btn-arrow">Keep shopping <i class="fa-solid fa-arrow-right"></i></a></div>
+</div></section>
+{% endblock %}

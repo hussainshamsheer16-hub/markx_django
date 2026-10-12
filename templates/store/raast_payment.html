@@ -1,0 +1,31 @@
+{% extends "store/base.html" %}{% load mx static %}
+{% block title %}Raast payment | MarkX Collections{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container"><span class="eyebrow">ORDER PAYMENT</span><h1>Pay with Raast</h1></div></section>
+<section class="section"><div class="container" style="max-width:900px">
+  <div class="checkout-grid" style="grid-template-columns:minmax(0,1fr)">
+    <div class="contact-form-card" style="text-align:center;max-width:620px;margin:0 auto;width:100%">
+      <h2 style="margin-bottom:8px">Pay {{ order.total|money }} with Raast</h2>
+      <p class="admin-sub">Order {{ order.number }}</p>
+      {% if order.status == "pending" and qr_available %}
+        <img src="{% if qr_url %}{{ qr_url }}{% else %}{% static 'img/jazzcash-raast-payment.jpeg' %}{% endif %}" alt="JazzCash Raast merchant payment QR for Muhammad Shop" width="300" height="300" style="display:block;width:min(100%,300px);height:auto;object-fit:contain;margin:20px auto;background:white;padding:12px;border:1px solid #e8e5dc;border-radius:12px">
+        <p>Scan this merchant Raast QR with your bank or wallet app, check the recipient, and enter the order amount shown here if your app asks for it.</p>
+        <p class="admin-sub">If this page is open on the phone you intend to pay with, scan the QR using another device.</p>
+      {% elif order.status == "pending" %}
+        <p class="admin-sub" style="margin-top:20px">Merchant Raast QR has not been configured yet. Please contact us to complete payment.</p>
+      {% else %}
+        <p class="admin-sub" style="margin-top:20px">This order is {{ order.get_status_display|lower }}. Contact us if you need help with its payment.</p>
+      {% endif %}
+      <div class="cart-side" style="text-align:left;margin-top:24px;border-top:1px solid var(--line);padding-top:20px">
+        <h3 style="margin-bottom:14px">Transfer details</h3>
+        <div class="sum-row"><span>Account name</span><strong>{{ raast_account_title|default:"Muhammad Shop" }}</strong></div>
+        {% if raast_iban %}<div class="sum-row"><span>IBAN</span><strong>{{ raast_iban }}</strong></div>{% endif %}
+        <div class="sum-row"><span>Order reference</span><strong>{{ order.number }}</strong></div>
+        <div class="sum-row total"><span>Amount</span><span>{{ order.total|money }}</span></div>
+        <p class="admin-sub" style="margin-top:16px">Your order stays pending until the payment appears in the merchant account and is verified.</p>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:24px"><a href="{% url 'store:shop' %}" class="btn btn-accent">Continue shopping</a></div>
+</div></section>
+{% endblock %}

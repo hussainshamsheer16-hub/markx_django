@@ -1,0 +1,59 @@
+{% extends "store/base.html" %}{% load mx %}
+{% block title %}My Orders | MarkX Collections{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container cart-page-heading">
+    <div><span class="eyebrow">YOUR MARKX ACCOUNT</span><h1>My orders</h1></div>
+    <a class="btn btn-ghost" href="{% url 'store:cart' %}"><i class="fa-solid fa-arrow-left"></i> Back to cart</a>
+  </div>
+</section>
+<section class="section-tight order-history-section">
+  <div class="container">
+    {% if orders %}
+      <div class="order-history-list">
+        {% for order in orders %}
+          <article class="order-history-item">
+            <header class="order-history-head">
+              <div><span class="eyebrow">ORDER</span><h2 class="order-history-title"><a class="order-history-number" href="{% url 'store:order_success' order.number %}">{{ order.number }}</a><a class="order-history-view" href="{% url 'store:order_success' order.number %}" aria-label="View details for order {{ order.number }}" title="View order details"><i class="fa-regular fa-eye"></i></a></h2><time datetime="{{ order.created|date:'c' }}">{{ order.created|date:"d M Y, H:i" }}</time></div>
+              <span class="tag tag-accent">{{ order.get_status_display }}</span>
+            </header>
+            <ul class="order-history-lines">
+              {% for item in order.items.all %}<li><div class="order-history-line-main">{% if item.product and item.product.image %}<img class="order-history-product-image" src="{{ item.product.image.url }}" alt="{{ item.name }}">{% endif %}<span>{{ item.qty }} × {{ item.name }} <small>{{ item.size }} · {{ item.color }}</small></span></div><b>{{ item.line_total|money }}</b></li>{% endfor %}
+            </ul>
+            <footer class="order-history-total"><span>Total</span><strong>{{ order.total|money }}</strong></footer>
+          </article>
+        {% endfor %}
+      </div>
+    {% elif not custom_requests %}
+      <div class="empty-state"><i class="fa-solid fa-receipt"></i><h2>No orders yet</h2><p>Your placed orders will appear here.</p><a class="btn btn-solid" href="{% url 'store:shop' %}">Start shopping</a></div>
+    {% endif %}
+    {% if custom_requests %}
+      <section class="custom-request-history">
+        <h2>Customization requests</h2>
+        <div class="order-history-list">
+          {% for custom in custom_requests %}
+            <article class="order-history-item custom-request-history-item">
+              <header class="order-history-head"><div><span class="eyebrow">CUSTOM ORDER REQUEST #{{ custom.pk }}</span><h3>{{ custom.tshirt_type|default:"Custom item" }}</h3><time datetime="{{ custom.created|date:'c' }}">{{ custom.created|date:"d M Y, H:i" }}</time></div><span class="tag tag-accent custom-status-{{ custom.status }}">{{ custom.get_status_display }}</span></header>
+              <div class="custom-order-grid">
+                <div><small>Quantity</small><strong>{{ custom.quantity }}</strong></div>
+                <div><small>Size</small><strong>{{ custom.size|default:"Not selected" }}</strong></div>
+                <div><small>Garment color</small><strong>{{ custom.color|default:"Not specified" }}</strong></div>
+                <div><small>Text color</small><strong class="custom-order-color"><i style="background-color:{{ custom.custom_text_color }}"></i>{{ custom.custom_text_color }}</strong></div>
+              </div>
+              {% if custom.custom_text or custom.placement or custom.notes %}
+                <dl class="custom-order-specs">
+                  {% if custom.custom_text %}<div><dt>Text to print</dt><dd>{{ custom.custom_text }}</dd></div>{% endif %}
+                  {% if custom.placement %}<div><dt>Print placement</dt><dd>{{ custom.placement }}</dd></div>{% endif %}
+                  {% if custom.notes %}<div><dt>Additional instructions</dt><dd>{{ custom.notes|linebreaksbr }}</dd></div>{% endif %}
+                </dl>
+              {% endif %}
+              {% if custom.design_file %}<a class="custom-request-design" href="{{ custom.design_file.url }}" target="_blank" rel="noopener"><img src="{{ custom.design_file.url }}" alt="Uploaded design for request {{ custom.pk }}"><span>View uploaded design</span></a>{% endif %}
+              <footer class="custom-order-quote"><span>Pricing</span><strong>Our team will contact you with a quote.</strong></footer>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

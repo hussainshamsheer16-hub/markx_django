@@ -1,0 +1,90 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if orders|length == 1 %}Receipt {{ orders.0.number }}{% else %}Order receipts ({{ orders|length }}){% endif %} | MarkX Collection</title>
+  <link rel="icon" href="{% static 'img/favicon.ico' %}">
+  <style>
+    /* A4 portrait page; every receipt is exactly half a page (210 x 148.5 mm) so two orders print per sheet. */
+    @page { size: A4 portrait; margin: 0; }
+    * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body { margin: 0; padding: 0; }
+    body { background: #d9d9d9; color: #000; font: 11.5px/1.4 Arial, Helvetica, sans-serif; }
+    .toolbar { position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 10px; background: #000; color: #fff; }
+    .toolbar button, .toolbar a { padding: 10px 18px; border: 0; background: #601925; color: #fff; font: 600 13px Arial; cursor: pointer; text-decoration: none; border-radius: 2px; }
+    .toolbar span { font-size: 12px; opacity: .85; }
+    .sheet { width: 210mm; height: 297mm; margin: 12px auto; background: #fff; overflow: hidden; page-break-after: always; break-after: page; position: relative; }
+    .sheet:last-of-type { page-break-after: auto; break-after: auto; }
+    .receipt { width: 210mm; height: 148.5mm; padding: 9mm 12mm 7mm; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+    .receipt + .receipt { border-top: 1px dashed #777; }
+    .receipt + .receipt::before { content: "\2702  cut here"; position: absolute; top: -7px; left: 8mm; background: #fff; padding: 0 6px; font-size: 8px; color: #777; }
+    .head { display: flex; align-items: center; justify-content: space-between; gap: 10mm; border-bottom: 2px solid #601925; padding-bottom: 3mm; }
+    .head img { height: 12mm; width: auto; }
+    .head .title { text-align: right; }
+    .head .title b { display: block; font-size: 15px; letter-spacing: .08em; color: #601925; }
+    .head .title span { font-size: 11px; }
+    .cols { display: grid; grid-template-columns: 64mm 1fr; gap: 8mm; margin-top: 4mm; flex: 1; min-height: 0; }
+    .box h4 { margin: 0 0 1.5mm; font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: #601925; border-bottom: 1px solid #ddd; padding-bottom: 1mm; }
+    .box { margin-bottom: 3.5mm; overflow-wrap: anywhere; }
+    .kv { display: flex; justify-content: space-between; gap: 6px; margin: 1px 0; }
+    .kv b { font-weight: 700; }
+    table.items { width: 100%; border-collapse: collapse; }
+    table.items th { text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: .05em; background: #000; color: #fff; padding: 3px 5px; }
+    table.items th.r, table.items td.r { text-align: right; }
+    table.items td { padding: 3px 5px; border-bottom: 1px solid #e4e4e4; vertical-align: top; }
+    .totals { margin-top: 2mm; margin-left: auto; width: 62mm; }
+    .totals .kv.total { border-top: 2px solid #000; margin-top: 2px; padding-top: 3px; font-size: 14px; font-weight: 700; color: #601925; }
+    .foot { margin-top: auto; display: flex; justify-content: space-between; font-size: 9.5px; color: #444; border-top: 1px solid #ddd; padding-top: 2mm; }
+    .receipt.dense { font-size: 10px; padding-top: 6mm; } .receipt.dense table.items td { padding: 2px 4px; }
+    .design { max-height: 45mm; max-width: 100%; object-fit: contain; }
+    @media print {
+      body { background: #fff; }
+      .toolbar { display: none; }
+      .sheet { margin: 0; box-shadow: none; }
+    }
+    @media screen and (max-width: 820px) { .sheet { zoom: .45; margin: 6px auto; } }
+  </style>
+</head>
+<body>
+  <div class="toolbar"><button onclick="window.print()">Print ({{ orders|length }} receipt{{ orders|length|pluralize }}, A4 &middot; 2 per page)</button>{% if pdf_url %}<a href="{{ pdf_url }}">Save as PDF</a>{% endif %}<span>Set paper size to A4, margins "None", scale 100%.</span></div>
+  {% for pair in sheets %}
+  <section class="sheet">
+    {% for order in pair %}
+    <article class="receipt{% if order.items.all|length > 5 %} dense{% endif %}">
+      <header class="head">
+        <img src="{% static 'img/logo-color.png' %}" alt="MarkX Collection">
+        <div class="title"><b>ORDER RECEIPT</b><span># {{ order.number }}</span></div>
+      </header>
+      <div class="cols">
+        <div>
+          <div class="box"><h4>Order</h4>
+            <div class="kv"><span>Date</span><b>{{ order.created|date:"d M Y, H:i" }}</b></div>
+            <div class="kv"><span>Status</span><b>{{ order.get_status_display }}</b></div>
+            <div class="kv"><span>Payment</span><b>{{ order.get_payment_method_display }}</b></div>
+          </div>
+          <div class="box"><h4>Customer</h4>
+            <b>{{ order.full_name }}</b><br>{{ order.phone }}<br>{{ order.address }}{% if order.city %}, {{ order.city }}{% endif %}{% if order.email %}<br>{{ order.email }}{% endif %}
+          </div>
+          {% if order.notes %}<div class="box"><h4>Notes</h4>{{ order.notes }}</div>{% endif %}
+        </div>
+        <div>
+          <table class="items">
+            <thead><tr><th>Item</th><th>Size</th><th>Colour</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Amount</th></tr></thead>
+            <tbody>{% for item in order.items.all %}<tr><td>{{ item.name }}</td><td>{{ item.size }}</td><td>{{ item.color }}</td><td class="r">{{ item.qty }}</td><td class="r">Rs. {{ item.price }}</td><td class="r">Rs. {{ item.line_total }}</td></tr>{% endfor %}</tbody>
+          </table>
+          <div class="totals">
+            <div class="kv"><span>Subtotal</span><span>Rs. {{ order.subtotal }}</span></div>
+            {% if order.discount %}<div class="kv"><span>Discount</span><span>- Rs. {{ order.discount }}</span></div>{% endif %}
+            <div class="kv"><span>Delivery</span><span>Rs. {{ order.delivery }}</span></div>
+            <div class="kv total"><span>TOTAL</span><span>Rs. {{ order.total }}</span></div>
+          </div>
+        </div>
+      </div>
+      <footer class="foot"><span>Thank you for shopping with MarkX Collection</span><span>Wear your mindset.</span></footer>
+    </article>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</body>
+</html>

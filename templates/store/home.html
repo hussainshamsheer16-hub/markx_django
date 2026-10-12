@@ -1,0 +1,127 @@
+{% extends "store/base.html" %}{% load static mx %}
+{% block content %}
+<section class="hero" id="heroCarousel" aria-label="Featured">
+  <div class="hero-slide hero-slide--main active"><div class="container">
+    <div class="hero-content"><span class="eyebrow">{% if request.session.site_language == 'ur' %}مردانہ شرٹس · ٹراؤزر · جوڑے{% else %}MEN'S SHIRTS · TROUSERS · PAIRS{% endif %}</span><h1>{% if request.session.site_language == 'ur' %}<span class="hero-heading-own">اپنا</span><br><em>انداز</em><span class="hero-heading-identity">اپنی پہچان۔</span>{% else %}Wear<br><em>Your</em><span>Mindset.</span>{% endif %}</h1><p class="lede">{% if request.session.site_language == 'ur' %}روزمرہ کی شرٹس، نفیس ٹراؤزر اور ہم آہنگ جوڑے۔<br>آپ کے ہر دن اور ہر انداز کے لیے۔{% else %}Everyday shirts, considered trousers and coordinated pairs.<br>Made for the way you move.{% endif %}</p><div class="hero-btns"><a href="{% url 'store:shop' %}" class="btn btn-accent btn-arrow">{% if request.session.site_language == 'ur' %}کلیکشن دیکھیں{% else %}Shop the collection{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div>
+      <div class="hero-benefits"><div><i class="fa-solid fa-shirt"></i><span>{% if request.session.site_language == 'ur' %}بہترین<br>کپڑا{% else %}Quality<br>fabric{% endif %}</span></div><div><i class="fa-solid fa-ruler-combined"></i><span>{% if request.session.site_language == 'ur' %}آرام دہ<br>فِٹ{% else %}Considered<br>fits{% endif %}</span></div><div><i class="fa-solid fa-globe"></i><span>{% if request.session.site_language == 'ur' %}ملک بھر میں<br>ترسیل{% else %}Nationwide<br>delivery{% endif %}</span></div><div><i class="fa-solid fa-leaf"></i><span>{% if request.session.site_language == 'ur' %}ہر روز کے<br>لیے{% else %}Made for<br>every day{% endif %}</span></div></div>
+    </div>
+    <div class="hero-art"><img src="{% static 'img/bulin.png' %}" alt="MarkX men's clothing collection"></div>
+    <div class="hero-aside"><span class="hero-sticker hero-sticker-one">{% if request.session.site_language == 'ur' %}روزمرہ کی<br>شرٹس{% else %}Shirts<br>for every day{% endif %}</span><span class="hero-sticker hero-sticker-two">{% if request.session.site_language == 'ur' %}بہترین فِٹ<br>ٹراؤزر{% else %}Trousers<br>that fit{% endif %}</span><span class="hero-sticker hero-sticker-three">{% if request.session.site_language == 'ur' %}ہم آہنگ<br>جوڑے{% else %}Coordinated<br>pairs{% endif %}</span></div>
+  </div></div>
+  <div class="hero-slide hero-slide--custom"><div class="container">
+    <div class="hero-content"><span class="eyebrow">{% if request.session.site_language == 'ur' %}ہر موقع کے لیے موزوں لباس{% else %}A FIT FOR EVERY OCCASION{% endif %}</span><h1>{% if request.session.site_language == 'ur' %}اپنے لیے <em>درست فِٹ چنیں۔</em>{% else %}Find your <em>Fit.</em>{% endif %}</h1><p class="lede">{% if request.session.site_language == 'ur' %}آرام دہ روزمرہ شرٹس سے نفیس رسمی لباس تک، اپنے دن کے لیے موزوں انداز منتخب کریں۔{% else %}From relaxed casual shirts to polished formal styles, find the right fit for your day.{% endif %}</p><div class="hero-btns"><a href="{% url 'store:shop' %}?category=shirts" class="btn btn-accent btn-arrow">{% if request.session.site_language == 'ur' %}شرٹس دیکھیں{% else %}Explore shirts{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div></div>
+    <div class="hero-art"><img src="{% static 'img/custom.png' %}" alt="Men's shirt styles"></div>
+    <div class="hero-aside"><span class="hero-sticker hero-sticker-one">{% if request.session.site_language == 'ur' %}روزمرہ<br>شرٹس{% else %}Casual<br>shirts{% endif %}</span><span class="hero-sticker hero-sticker-two">{% if request.session.site_language == 'ur' %}رسمی<br>لباس{% else %}Formal<br>styles{% endif %}</span><span class="hero-sticker hero-sticker-three">{% if request.session.site_language == 'ur' %}آپ کا انداز۔<br>آپ کا دن۔{% else %}Your fit.<br>Your day.{% endif %}</span></div>
+  </div></div>
+  <div class="hero-slide"><div class="container">
+    <div class="hero-content"><span class="eyebrow">{% if request.session.site_language == 'ur' %}حرکت کے لیے تیار{% else %}MADE TO MOVE{% endif %}</span><h1>{% if request.session.site_language == 'ur' %}آرام دہ<br><em>انداز</em>{% else %}Easy <em>Layers.</em>{% endif %}</h1><p class="lede">{% if request.session.site_language == 'ur' %}ہم آہنگ شرٹ اور ٹراؤزر کے جوڑے آپ کے مصروف دنوں کے لیے آرام اور نفیس انداز کا امتزاج ہیں۔{% else %}Coordinated shirt and trouser pairs bring comfort and a clean look to active days.{% endif %}</p><div class="hero-btns"><a href="{% url 'store:shop' %}?category=pairs" class="btn btn-accent btn-arrow">{% if request.session.site_language == 'ur' %}جوڑے دیکھیں{% else %}Explore pairs{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div></div>
+    <div class="hero-art"><img src="{% static 'img/sharp.png' %}" alt="Men's coordinated clothing"></div>
+  </div></div>
+  <div class="hero-slide"><div class="container">
+    <div class="hero-content"><span class="eyebrow">{% if request.session.site_language == 'ur' %}ٹیمیں اور ادارے{% else %}TEAMS &amp; ORGANIZATIONS{% endif %}</span><h1>{% if request.session.site_language == 'ur' %}ٹیم کے <em>یونیفارم</em>{% else %}Team <em>Uniforms.</em>{% endif %}</h1><p class="lede">{% if request.session.site_language == 'ur' %}کمپنیوں، اسکولوں، ٹیموں اور تقریبات کے لیے شرٹس، ٹراؤزر اور جوڑے۔{% else %}Shirts, trousers and pairs for companies, schools, teams and events.{% endif %}</p><div class="hero-btns"><a href="{% url 'store:bulk' %}" class="btn btn-accent btn-arrow">{% if request.session.site_language == 'ur' %}ٹیم آرڈر بنائیں{% else %}Plan a team order{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div></div>
+    <div class="hero-art"><img src="{% static 'img/bulk order.png' %}" alt="Bulk order apparel"></div>
+  </div></div>
+  <div class="hero-slide"><div class="container">
+    <div class="hero-content"><span class="eyebrow">{% if request.session.site_language == 'ur' %}ادائیگی کے آسان طریقے{% else %}FLEXIBLE PAYMENTS{% endif %}</span><h1>{% if request.session.site_language == 'ur' %}ادائیگی کا<br><em>آسان طریقہ۔</em>{% else %}Pay <em>Your Way.</em>{% endif %}</h1><p class="lede">{% if request.session.site_language == 'ur' %}کیش آن ڈیلیوری، راست بینک ٹرانسفر یا اسٹرائپ کے ذریعے محفوظ کارڈ ادائیگی۔{% else %}Choose cash on delivery, Raast bank transfer, or secure card payment through Stripe.{% endif %}</p><div class="hero-btns"><a href="{% url 'store:shop' %}" class="btn btn-accent btn-arrow">{% if request.session.site_language == 'ur' %}ابھی خریدیں{% else %}Shop Now{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div></div>
+    <div class="hero-art"><img src="{% static 'img/card.png' %}" alt="Secure payment options for the MarkX collection"></div>
+  </div></div>
+  <div class="container hero-controls"><div class="hero-dots" id="heroDots"></div><div class="hero-arrows"><button class="hero-nav hero-prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button><button class="hero-nav hero-next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+</section>
+
+<section class="home-category-links home-tiles" aria-label="Shop by clothing type">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}کیٹیگری کے مطابق خریداری{% else %}SHOP BY CATEGORY{% endif %}</span><h2>{% if request.session.site_language == 'ur' %}اپنی پسند کا لباس چنیں{% else %}Find your piece{% endif %}</h2></div></div>
+    <div class="tile-grid">
+    {% for tile in category_tiles %}{% if tile.count %}
+      <a class="cat-tile cat-tile--{{ tile.slug }} reveal" href="{% url 'store:shop' %}?category={{ tile.slug }}">
+        {% if tile.cover_url %}<img src="{{ tile.cover_url }}" alt="{{ tile.en }}" loading="lazy">{% else %}<img class="tile-logo" src="{% static 'img/logo-mark-white.png' %}" alt="">{% endif %}
+        <span class="cat-tile-label"><b>{% if request.session.site_language == 'ur' %}{{ tile.ur }}{% else %}{{ tile.en }}{% endif %}</b><small>{{ tile.count }} {% if request.session.site_language == 'ur' %}مصنوعات{% else %}styles{% endif %}</small><i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+    {% endif %}{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="brand-strip" aria-label="MarkX promises"><div class="container brand-strip-grid">
+  <div><i class="fa-solid fa-truck-fast"></i><b>{% if request.session.site_language == 'ur' %}ملک بھر میں ترسیل{% else %}Nationwide delivery{% endif %}</b><span>{% if request.session.site_language == 'ur' %}6,000 روپے سے زیادہ پر مفت{% else %}Free over Rs. 6,000{% endif %}</span></div>
+  <div><i class="fa-solid fa-money-bill-wave"></i><b>{% if request.session.site_language == 'ur' %}کیش آن ڈیلیوری{% else %}Cash on delivery{% endif %}</b><span>{% if request.session.site_language == 'ur' %}وصولی پر ادائیگی{% else %}Pay when it arrives{% endif %}</span></div>
+  <div><i class="fa-solid fa-rotate-left"></i><b>{% if request.session.site_language == 'ur' %}7 دن میں تبادلہ{% else %}7-day exchange{% endif %}</b><span>{% if request.session.site_language == 'ur' %}غیر استعمال شدہ اشیا پر{% else %}On unworn items{% endif %}</span></div>
+  <div><i class="fa-solid fa-shield-halved"></i><b>{% if request.session.site_language == 'ur' %}محفوظ ادائیگی{% else %}Secure payments{% endif %}</b><span>{% if request.session.site_language == 'ur' %}راست، کارڈ اور COD{% else %}Raast, card & COD{% endif %}</span></div>
+</div></section>
+
+<section class="section" aria-labelledby="trendHeading"><div class="container">
+  <div class="section-head"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}نئی آمد · مارکس کی خاص کلیکشن{% else %}NEW ARRIVALS · MARKX ORIGINALS{% endif %}</span><h2 id="trendHeading">{% if request.session.site_language == 'ur' %}نئی کلیکشن{% else %}The Drop{% endif %}</h2></div><a href="{% url 'store:shop' %}" class="link-arrow">{% if request.session.site_language == 'ur' %}تمام مصنوعات دیکھیں{% else %}View All Products{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div>
+  <div class="product-grid">{% for p in featured|slice:":8" %}{% include "store/_card.html" %}{% endfor %}</div>
+</div></section>
+
+{% if shirts %}<section class="section section-row" aria-label="Shirts"><div class="container">
+  <div class="section-head"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}روزمرہ شرٹس{% else %}EVERYDAY SHIRTS{% endif %}</span><h2>{% if request.session.site_language == 'ur' %}شرٹس{% else %}Shirts{% endif %}</h2></div><a href="{% url 'store:shop' %}?category=shirts" class="link-arrow">{% if request.session.site_language == 'ur' %}سب دیکھیں{% else %}View all{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div>
+  <div class="product-grid">{% for p in shirts %}{% include "store/_card.html" %}{% endfor %}</div>
+</div></section>{% endif %}
+{% if trousers %}<section class="section section-row" aria-label="Trousers"><div class="container">
+  <div class="section-head"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}نفیس اور آرام دہ{% else %}TAILORED & EASY{% endif %}</span><h2>{% if request.session.site_language == 'ur' %}ٹراؤزر{% else %}Trousers{% endif %}</h2></div><a href="{% url 'store:shop' %}?category=trousers" class="link-arrow">{% if request.session.site_language == 'ur' %}سب دیکھیں{% else %}View all{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div>
+  <div class="product-grid">{% for p in trousers %}{% include "store/_card.html" %}{% endfor %}</div>
+</div></section>{% endif %}
+{% if pairs %}<section class="section section-row" aria-label="Pairs"><div class="container">
+  <div class="section-head"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}ہم آہنگ سیٹ{% else %}MATCHED SETS{% endif %}</span><h2>{% if request.session.site_language == 'ur' %}جوڑے{% else %}Pairs{% endif %}</h2></div><a href="{% url 'store:shop' %}?category=pairs" class="link-arrow">{% if request.session.site_language == 'ur' %}سب دیکھیں{% else %}View all{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div>
+  <div class="product-grid">{% for p in pairs %}{% include "store/_card.html" %}{% endfor %}</div>
+</div></section>{% endif %}
+
+<section class="why-markx" aria-labelledby="whyHeading"><div class="container">
+  <div class="section-head center"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}مارکس ہی کیوں{% else %}WHY MARKX{% endif %}</span><h2 id="whyHeading">{% if request.session.site_language == 'ur' %}نمایاں نظر آنے کے لیے بنایا گیا{% else %}Built to stand out{% endif %}</h2></div></div>
+  <div class="why-grid">
+    <div class="why-card reveal"><i class="fa-solid fa-shirt"></i><h3>{% if request.session.site_language == 'ur' %}معیاری کپڑا{% else %}Quality fabric{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}نرم اور ہوا دار کاٹن جو روزمرہ استعمال اور بار بار دھلائی کے بعد بھی قائم رہتی ہے۔{% else %}Soft, breathable cotton chosen for daily wear and made to last wash after wash.{% endif %}</p></div>
+    <div class="why-card reveal"><i class="fa-solid fa-ruler-combined"></i><h3>{% if request.session.site_language == 'ur' %}بہتر فِٹ{% else %}Considered fits{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}شرٹس، کمر کے ناپ کے ٹراؤزر اور جوڑوں کے لیے واضح سائز گائیڈ۔{% else %}Clear size guides for shirts, waist-sized trousers and matched pairs.{% endif %}</p></div>
+    <div class="why-card reveal"><i class="fa-solid fa-pen-ruler"></i><h3>{% if request.session.site_language == 'ur' %}کسٹم اور ٹیم آرڈرز{% else %}Custom & team orders{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}نام، لوگو اور نمبر شامل کروائیں یا اپنی ٹیم اور کمپنی کے لیے بلک آرڈر کریں۔{% else %}Add names, logos and numbers, or order in bulk for your team or company.{% endif %}</p></div>
+    <div class="why-card reveal"><i class="fa-solid fa-headset"></i><h3>{% if request.session.site_language == 'ur' %}حقیقی مدد{% else %}Real support{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}واٹس ایپ پر ہماری ٹیم سے بات کریں یا کسی بھی وقت آرڈر ٹریک کریں۔{% else %}Talk to our team on WhatsApp or track your order any time.{% endif %}</p></div>
+  </div>
+</div></section>
+
+<section class="steps-band" aria-labelledby="stepsHeading"><div class="container">
+  <div class="section-head center"><div><span class="eyebrow">{% if request.session.site_language == 'ur' %}طریقۂ کار{% else %}HOW IT WORKS{% endif %}</span><h2 id="stepsHeading">{% if request.session.site_language == 'ur' %}تین آسان مراحل{% else %}Order in three steps{% endif %}</h2></div></div>
+  <ol class="steps-grid">
+    <li class="reveal"><span>01</span><h3>{% if request.session.site_language == 'ur' %}منتخب کریں{% else %}Choose{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}شرٹ، ٹراؤزر یا جوڑا چنیں اور سائز و رنگ منتخب کریں۔{% else %}Pick your shirt, trousers or pair and select size and colour.{% endif %}</p></li>
+    <li class="reveal"><span>02</span><h3>{% if request.session.site_language == 'ur' %}چیک آؤٹ{% else %}Checkout{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}کیش آن ڈیلیوری، راست ٹرانسفر یا کارڈ سے ادائیگی کریں۔{% else %}Pay with cash on delivery, Raast transfer or card.{% endif %}</p></li>
+    <li class="reveal"><span>03</span><h3>{% if request.session.site_language == 'ur' %}ترسیل{% else %}Delivered{% endif %}</h3><p>{% if request.session.site_language == 'ur' %}ہم 3 سے 6 کاروباری دنوں میں پہنچاتے ہیں اور آپ ہر مرحلہ ٹریک کر سکتے ہیں۔{% else %}We deliver in 3–6 working days and you can track every step.{% endif %}</p></li>
+  </ol>
+</div></section>
+
+
+
+<section class="custom-band" aria-labelledby="customHeading"><div class="custom-inner">
+  <div class="custom-visual"><img class="tee-art" src="{% static 'img/custom.png' %}" alt="Custom apparel design"><svg class="crown" viewBox="0 0 80 60" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 52 12 12l22 22L40 6l8 28 22-22 4 40"/><path d="M14 52h58"/></svg></div>
+  <div class="custom-copy">
+    <div class="txt">
+      <img class="right-fit-logo" src="{% static 'img/logo-vertical-red.png' %}" alt="MarkX Collection" loading="lazy"><span class="eyebrow">{% if request.session.site_language == 'ur' %}مردانہ روزمرہ انداز{% else %}MEN'S EVERYDAY STYLE{% endif %}</span><h2 id="customHeading">{% if request.session.site_language == 'ur' %}ہر دن کے لیے<br>بہترین فِٹ۔{% else %}The right fit.<br>Every day.{% endif %}</h2><p>{% if request.session.site_language == 'ur' %}آرام دہ شرٹس، ہمہ گیر ٹراؤزر اور ہم آہنگ جوڑوں کے ساتھ اپنا روزمرہ لباس منتخب کریں۔{% else %}Build a wardrobe around well-fitting shirts, versatile trousers and coordinated pairs.{% endif %}</p><a href="{% url 'store:shop' %}" class="btn btn-accent btn-arrow">{% if request.session.site_language == 'ur' %}کلیکشن دیکھیں{% else %}Shop the collection{% endif %} <i class="fa-solid fa-arrow-right"></i></a></div>
+    <div class="custom-feats">
+      <div class="cfeat"><span class="ico"><i class="fa-solid fa-shirt"></i></span><div><b>{% if request.session.site_language == 'ur' %}روزمرہ شرٹس{% else %}Everyday shirts{% endif %}</b><span>{% if request.session.site_language == 'ur' %}کیژول سے رسمی انداز تک{% else %}Casual to formal{% endif %}</span></div></div>
+      <div class="cfeat"><span class="ico"><i class="fa-solid fa-ruler-combined"></i></span><div><b>{% if request.session.site_language == 'ur' %}کمر کے ناپ کے ٹراؤزر{% else %}Waist-sized trousers{% endif %}</b><span>{% if request.session.site_language == 'ur' %}سائز کے لیے واضح رہنمائی{% else %}Clear fit guidance{% endif %}</span></div></div>
+      <div class="cfeat"><span class="ico"><i class="fa-solid fa-truck-fast"></i></span><div><b>{% if request.session.site_language == 'ur' %}ملک بھر میں ترسیل{% else %}Nationwide delivery{% endif %}</b><span>{% if request.session.site_language == 'ur' %}6,000 روپے سے زیادہ پر مفت{% else %}Free over Rs. 6,000{% endif %}</span></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="home-feedback" aria-labelledby="homeFeedbackHeading"><div class="container home-feedback-inner">
+  <span class="eyebrow">{% if request.session.site_language == 'ur' %}صارفین کی رائے{% else %}CUSTOMER FEEDBACK{% endif %}</span>
+  <h2 id="homeFeedbackHeading">{% if request.session.site_language == 'ur' %}اپنا تجربہ ہمارے ساتھ شیئر کریں{% else %}Share your MarkX experience{% endif %}</h2>
+  <p>{% if request.session.site_language == 'ur' %}آپ کی رائے ہمیں بہتر بنانے میں مدد دیتی ہے۔{% else %}Your feedback helps us make MarkX better.{% endif %}</p>
+  {% if home_comments %}
+  <div class="home-feedback-marquee" aria-label="Customer feedback">
+    <div class="home-feedback-track">
+      {% for copy in "12" %}
+      <div class="home-feedback-group"{% if forloop.last %} aria-hidden="true"{% endif %}>
+        {% for comment in home_comments %}
+        <article class="home-feedback-card">
+          <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+          <p>{{ comment.message }}</p>
+          <strong>{{ comment.name }}</strong>
+        </article>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  <a class="btn home-feedback-button" href="{% url 'store:leave_comment' %}">{% if request.session.site_language == 'ur' %}رائے دیں{% else %}Leave feedback{% endif %} <i class="fa-solid fa-arrow-right"></i></a>
+</div></section>
+{% endblock %}

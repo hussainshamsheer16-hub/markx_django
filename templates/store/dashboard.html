@@ -1,0 +1,77 @@
+{% extends "store/base.html" %}{% load mx %}
+{% block title %}Dashboard | MarkX{% endblock %}
+{% block content %}
+<section class="page-head dashboard-page-head">
+  <div class="container dashboard-heading">
+    <div>
+      <span class="eyebrow">STAFF WORKSPACE</span>
+      <h1>Store overview</h1>
+      <p class="dashboard-lede">Orders, requests, and sales at a glance.</p>
+    </div>
+    <div class="staff-workspace-actions dashboard-hero-actions">
+      <a class="btn btn-accent dashboard-admin-action" href="{% url 'store:staff_workspace' %}"><i class="fa-solid fa-screwdriver-wrench"></i> Manage store</a>
+    </div>
+  </div>
+</section>
+<section class="section dashboard-section">
+  <div class="container">
+    {% if is_owner and products_missing_cost_count %}
+    <section class="dashboard-missing-cost" aria-labelledby="missing-cost-title">
+      <div><span class="eyebrow">ADMIN ACTION NEEDED</span><h2 id="missing-cost-title">Products missing cost price <span>{{ products_missing_cost_count }}</span></h2><p>Set a cost price for new products so finance and profit reports stay accurate.</p></div>
+      <ul>{% for product in products_missing_cost %}<li><span>{{ product.name }}</span><a href="{% url 'store:manage_edit' 'products' product.pk %}">Add cost <i class="fa-solid fa-arrow-right"></i></a></li>{% endfor %}</ul>
+      {% if products_missing_cost_count > 10 %}<a class="dashboard-missing-cost-more" href="{% url 'store:manage_model' 'products' %}">View all products</a>{% endif %}
+    </section>
+    {% endif %}
+    <div class="admin-stats dashboard-stats" aria-label="Store performance metrics">
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-sack-dollar"></i><div class="admin-stat-value">{{ revenue|money }}</div><div class="admin-stat-label">Revenue</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-receipt"></i><div class="admin-stat-value">{{ orders_count }}</div><div class="admin-stat-label">Orders</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-hourglass-half"></i><div class="admin-stat-value">{{ pending }}</div><div class="admin-stat-label">Pending</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-palette"></i><div class="admin-stat-value">{{ customs }}</div><div class="admin-stat-label">New custom</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-boxes-stacked"></i><div class="admin-stat-value">{{ bulks }}</div><div class="admin-stat-label">New bulk</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-envelope"></i><div class="admin-stat-value">{{ subs }}</div><div class="admin-stat-label">Subscribers</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-message"></i><div class="admin-stat-value">{{ messages_n }}</div><div class="admin-stat-label">Unread messages</div></div>
+      <div class="admin-stat-card dashboard-stat"><i class="fa-solid fa-triangle-exclamation"></i><div class="admin-stat-value">{{ low_stock_count }}</div><div class="admin-stat-label">Low stock</div></div>
+    </div>
+
+    <div class="dashboard-section-head">
+      <div><span class="eyebrow">FULFILLMENT</span><h2>Recent orders</h2></div>
+      <div class="dashboard-shortcuts">
+        <a class="btn btn-ghost btn-sm" href="{% url 'store:manage_model' 'orders' %}">Manage orders <i class="fa-solid fa-arrow-right"></i></a>
+        <a class="btn btn-ghost btn-sm" href="{% url 'store:manage_model' 'custom-requests' %}">Custom orders <i class="fa-solid fa-arrow-right"></i></a>
+        <a class="btn btn-ghost btn-sm" href="{% url 'store:manage_model' 'messages' %}">Contact messages <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Order</th><th>Customer</th><th>City</th><th>Payment</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for o in recent %}
+          <tr><td><b>{{ o.number }}</b></td><td>{{ o.full_name }}<div class="admin-sub">{{ o.phone }}</div></td><td>{{ o.city }}</td><td>{{ o.get_payment_method_display }}</td><td>{{ o.total|money }}</td><td><span class="tag tag-accent">{{ o.get_status_display }}</span></td><td>{{ o.created|date:"d M, H:i" }}</td></tr>
+          {% empty %}
+          <tr><td colspan="7" class="dashboard-empty">No orders yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <section class="dashboard-sellers" aria-labelledby="dashboard-sellers-title">
+      <div class="dashboard-section-head">
+        <div><span class="eyebrow">BY QUANTITY SOLD</span><h2 id="dashboard-sellers-title">Top sellers</h2></div>
+      </div>
+      <ol class="dashboard-seller-list">
+        {% for t in top %}
+        <li><span class="dashboard-rank">{{ forloop.counter|stringformat:"02d" }}</span><span class="dashboard-seller-name">{{ t.name }}</span><span class="dashboard-sold"><b>{{ t.n }}</b> sold</span></li>
+        {% empty %}
+        <li class="dashboard-no-sellers">No sales yet.</li>
+        {% endfor %}
+      </ol>
+    </section>
+    <section class="dashboard-sellers" aria-labelledby="dashboard-low-stock-title">
+      <div class="dashboard-section-head"><div><span class="eyebrow">INVENTORY</span><h2 id="dashboard-low-stock-title">Low stock</h2></div><a class="btn btn-ghost btn-sm" href="{% url 'store:manage_model' 'products' %}">Manage products <i class="fa-solid fa-arrow-right"></i></a></div>
+      <div class="admin-table-wrap dashboard-low-stock-wrap"><table class="admin-table dashboard-low-stock-table"><thead><tr><th>Image</th><th>Product</th><th>Available</th></tr></thead><tbody>
+        {% for product in low_stock %}<tr><td>{% if product.image %}<img class="staff-product-thumb" src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}<span class="staff-product-thumb-empty"><i class="fa-regular fa-image"></i></span>{% endif %}</td><td>{{ product.name }}</td><td><span class="order-low-stock"><i class="fa-solid fa-triangle-exclamation"></i> {{ product.available_stock }}</span></td></tr>{% empty %}<tr><td colspan="3" class="dashboard-empty">No low-stock products.</td></tr>{% endfor %}
+      </tbody></table></div>
+    </section>
+  </div>
+</section>
+{% endblock %}

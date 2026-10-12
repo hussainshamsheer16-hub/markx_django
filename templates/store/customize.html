@@ -1,0 +1,34 @@
+{% extends "store/base.html" %}{% load static %}
+{% block title %}{% if request.session.site_language == 'ur' %}اپنی پسند کا لباس | مارکس کلیکشنز{% else %}Customize | MarkX Collections{% endif %}{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container"><span class="eyebrow">{% if request.session.site_language == 'ur' %}مردانہ لباس اپنی پسند کے مطابق{% else %}PERSONALISED MEN'S CLOTHING{% endif %}</span><h1>{% if request.session.site_language == 'ur' %}اپنا انداز خود بنائیں۔{% else %}Make it personal.{% endif %}</h1><p class="lede" style="color:#cfcfc8;margin-top:12px">{% if request.session.site_language == 'ur' %}نام، اپنی پسند کی تفصیل یا ٹیم کی شناخت کے ساتھ شرٹس، ٹراؤزر یا ہم آہنگ جوڑے تیار کروانے کی درخواست دیں۔{% else %}Request personalised shirts, trousers or coordinated pairs with names, details or team identification.{% endif %}</p></div></section>
+<section class="section"><div class="container customize-layout">
+  <div class="tee-preview"><div class="preview-shirt" id="previewShirt"><img src="{% get_media_prefix %}products/premium-white-cotton-tee.jpg" alt="{% if request.session.site_language == 'ur' %}نمونہ{% else %}Preview{% endif %}" id="previewImg"><div class="preview-text" id="previewText">{% if request.session.site_language == 'ur' %}اپنا متن{% else %}YOUR TEXT{% endif %}</div></div><p class="preview-color-label">{% if request.session.site_language == 'ur' %}منتخب شرٹ کا رنگ{% else %}Selected shirt color{% endif %}: <strong id="previewColorLabel">White</strong></p><p class="admin-sub" style="margin-top:12px">{% if request.session.site_language == 'ur' %}اپنی پسند کی تفصیل بتائیں؛ ہماری ٹیم حتمی معلومات کی تصدیق کے لیے آپ سے رابطہ کرے گی۔{% else %}Share your preferences — our team will confirm the final details with you.{% endif %}</p></div>
+  <form class="custom-request-form" method="post" enctype="multipart/form-data" novalidate>{% csrf_token %}
+    <div class="form-grid">
+      {% include "store/_field.html" with field=form.name %}{% include "store/_field.html" with field=form.phone %}
+      {% include "store/_field.html" with field=form.email %}{% include "store/_field.html" with field=form.quantity %}
+      {% include "store/_field.html" with field=form.tshirt_type %}{% include "store/_field.html" with field=form.color %}
+      {% include "store/_field.html" with field=form.size %}{% include "store/_field.html" with field=form.placement %}
+      {% include "store/_field.html" with field=form.custom_text extra="full" %}{% include "store/_field.html" with field=form.custom_text_color %}{% include "store/_field.html" with field=form.design_file extra="full" %}
+      {% include "store/_field.html" with field=form.notes extra="full" %}
+    </div>
+    <button class="btn btn-accent btn-block btn-arrow" type="submit">{% if request.session.site_language == 'ur' %}قیمت معلوم کرنے کی درخواست دیں{% else %}Request a quote{% endif %} <i class="fa-solid fa-arrow-right"></i></button>
+    <p class="custom-request-tracking">{% if request.session.site_language == 'ur' %}درخواست جمع ہونے کے بعد اس کا اسٹیٹس{% else %}After submitting, track your request status in{% endif %} <a href="{% url 'store:my_orders' %}">{% if request.session.site_language == 'ur' %}میرے آرڈرز{% else %}My Orders{% endif %}</a>.</p>
+  </form>
+</div></section>
+{% endblock %}
+{% block scripts %}<script>
+const t=document.getElementById('id_custom_text'),p=document.getElementById('previewText'),emptyText=document.documentElement.lang==='ur'?'اپنا متن':'YOUR TEXT';
+const garmentColor=document.getElementById('id_color'),colorLabel=document.getElementById('previewColorLabel'),textColor=document.getElementById('id_custom_text_color'),designInput=document.getElementById('id_design_file'),shirtImage=document.getElementById('previewImg'),defaultShirtImage=shirtImage.src,placementInput=document.getElementById('id_placement');
+const fitPreviewText=()=>{const value=t?.value||'';p.textContent=value||emptyText;p.style.fontSize=value.length>32?'clamp(.9rem,2.2vw,1.4rem)':value.length>18?'clamp(1.1rem,3vw,1.8rem)':'';};
+const placePreviewText=()=>{const place=(placementInput?.value||'').toLowerCase();p.style.left='50%';p.style.top='48%';p.style.width='48%';if(place.includes('left chest')){p.style.left='42%';p.style.top='40%';p.style.width='28%';}else if(place.includes('right chest')){p.style.left='58%';p.style.top='40%';p.style.width='28%';}else if(place.includes('sleeve')){p.style.left='24%';p.style.top='43%';p.style.width='28%';}else if(place.includes('back')){p.style.top='56%';p.style.width='54%';}};
+t?.addEventListener('input',fitPreviewText);
+placementInput?.addEventListener('input',placePreviewText);
+textColor?.addEventListener('input',()=>p.style.color=textColor.value);
+garmentColor?.addEventListener('input',()=>colorLabel.textContent=garmentColor.value);
+designInput?.addEventListener('change',()=>{const file=designInput.files?.[0];if(!file){shirtImage.src=defaultShirtImage;p.style.display='';return;}p.style.display='none';const reader=new FileReader();reader.onload=()=>{shirtImage.src=reader.result;};reader.readAsDataURL(file);});
+if(garmentColor&&colorLabel)colorLabel.textContent=garmentColor.value;
+if(textColor&&p)p.style.color=textColor.value;
+fitPreviewText();placePreviewText();
+</script>{% endblock %}

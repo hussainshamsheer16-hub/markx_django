@@ -1,0 +1,225 @@
+{% extends "store/base.html" %}
+{% load mx %}
+{% block title %}{{ spec.title }} | Manage Store{% endblock %}
+{% block content %}
+<section class="page-head dashboard-page-head">
+  <div class="container dashboard-heading">
+  <div><span class="eyebrow"><a href="{% url 'store:staff_workspace' %}">MANAGE STORE</a></span><h1>{{ spec.title }}</h1><p class="dashboard-lede">{{ page_obj.paginator.count }} records</p></div>
+  <div class="staff-workspace-actions staff-list-header-actions{% if model_key == 'products' %} products-list-header-actions{% endif %}{% if model_key == 'orders' %} orders-list-header-actions{% endif %}{% if model_key == 'custom-requests' %} custom-request-header-actions{% endif %}{% if model_key == 'subscribers' %} subscribers-list-header-actions{% endif %}{% if model_key == 'messages' %} messages-list-header-actions{% endif %}"><a class="btn btn-ghost staff-back-button{% if model_key == 'orders' %} btn-sm{% endif %}" href="{{ back_url }}" aria-label="{{ back_label }}" title="{{ back_label }}"><i class="fa-solid fa-arrow-left"></i></a>{% if can_add %}<a class="btn btn-accent{% if model_key == 'orders' %} btn-sm{% endif %}" href="{% url 'store:manage_create' model_key %}"><i class="fa-solid fa-plus"></i> {% if model_key == 'messages' %}Add message{% else %}Add {{ singular_title }}{% endif %}</a>{% endif %}</div>
+  </div>
+</section>
+<section class="section dashboard-section">
+  <div class="container{% if model_key == 'orders' %} orders-list-container{% endif %}">
+    <form class="staff-filter-bar{% if model_key == 'orders' %} orders-filter-bar{% endif %}{% if model_key == 'custom-requests' %} custom-request-filter-bar{% endif %}{% if model_key == 'subscribers' %} subscribers-list-filter-bar{% endif %}{% if model_key == 'messages' %} messages-list-filter-bar{% endif %}" method="get">
+      <label class="staff-search{% if model_key == 'orders' %} orders-search-field{% elif model_key == 'custom-requests' %} custom-request-search-field{% elif model_key == 'subscribers' %} subscribers-list-search-field{% elif model_key == 'messages' %} messages-list-search-field{% endif %}"><span class="sr-only">Search {{ spec.title }}</span><input type="search" name="q" value="{{ search_query }}" placeholder="Search {{ spec.title|lower }}...">{% if model_key == 'orders' or model_key == 'custom-requests' %}<i class="fa-solid fa-magnifying-glass orders-search-icon" aria-hidden="true"></i>{% endif %}</label>
+      {% for filter in filter_fields %}<label class="staff-filter"><span>{{ filter.label }}</span><select name="{{ filter.name }}"><option value="">All</option>{% for option in filter.options %}<option value="{{ option.value }}"{% if option.selected %} selected{% endif %}>{{ option.label }}</option>{% endfor %}</select></label>{% endfor %}
+      {% if model_key == 'orders' %}<label class="staff-filter"><span>Order date</span><input type="date" name="order_date" value="{{ order_date }}"></label>{% endif %}
+      <button class="btn btn-solid btn-sm" type="submit"><i class="fa-solid fa-filter"></i> Apply</button>
+      {% if model_key == 'orders' %}<a class="btn btn-solid btn-sm orders-print-all" href="{% url 'store:order_receipts_print' %}?{{ query_string.urlencode }}" target="_blank" rel="noopener"><i class="fa-solid fa-print"></i> Print all</a>{% endif %}
+      {% if search_query or active_filters or order_date %}<a class="btn btn-ghost btn-sm{% if model_key == 'orders' %} orders-filter-clear{% endif %}" href="{% url 'store:manage_model' model_key %}">Clear</a>{% endif %}
+    </form>
+    {% if model_key == 'orders' %}
+    <form id="selectedOrdersForm" method="post" action="{% url 'store:order_receipts_print' %}" hidden>{% csrf_token %}</form>
+    <div class="order-selection-toolbar orders-selection-toolbar">
+      <button class="btn btn-ghost btn-sm" type="button" id="selectAllOrdersButton">Select all</button>
+      <button class="btn btn-accent btn-sm" type="submit" form="selectedOrdersForm"><i class="fa-solid fa-print"></i> Print selected receipts</button>
+    </div>
+    {% endif %}
+    {% if model_key == 'subscribers' %}
+    <div class="subscriber-email-export">
+      <button class="btn btn-accent btn-sm" type="button" id="copySubscriberEmails" {% if not subscriber_emails %}disabled{% endif %}><i class="fa-solid fa-copy"></i> Copy all emails</button>
+      <textarea id="subscriberEmailList" class="form-control" rows="3" readonly hidden>{{ subscriber_emails }}</textarea>
+      <span id="subscriberEmailStatus" role="status" aria-live="polite"></span>
+    </div>
+    {% endif %}
+    <div class="admin-table-wrap">
+      <table class="admin-table staff-data-table{% if model_key == 'orders' %} orders-list-table{% endif %}{% if model_key == 'products' %} products-list-table{% if request.user.is_superuser %} owner-products-cost-table{% endif %}{% endif %}{% if model_key == 'categories' %} categories-list-table{% endif %}{% if model_key == 'custom-requests' %} custom-request-list-table{% endif %}">
+        <thead><tr>{% if model_key == 'orders' %}<th><input type="checkbox" id="selectAllOrders" aria-label="Select all orders on this page"></th>{% endif %}{% if spec.show_thumbnail %}<th>Image</th>{% endif %}{% for field,label in spec.columns %}<th>{{ label }}</th>{% endfor %}{% if model_key == 'orders' %}<th>Stock</th>{% endif %}<th>Actions</th></tr></thead>
+        <tbody>
+          {% for row in rows %}<tr>{% if model_key == 'orders' %}<td><input class="order-select" type="checkbox" name="order_ids" value="{{ row.object.pk }}" data-status="{{ row.object.status }}" form="selectedOrdersForm" aria-label="Select order {{ row.object.number }}"></td>{% endif %}{% if spec.show_thumbnail %}<td>{% if row.image_url %}<a href="{{ row.image_url }}" target="_blank" rel="noopener"><img class="staff-product-thumb" src="{{ row.image_url }}" alt="{{ row.object.name }}"></a>{% else %}<span class="staff-product-thumb-empty"><i class="fa-regular fa-image"></i></span>{% endif %}</td>{% endif %}{% for value in row.cells %}<td>{% if model_key == 'orders' and forloop.counter == 5 %}<form class="inline-order-status-form" method="post" action="{% url 'store:order_status_update' row.object.pk %}{% if query_string.urlencode %}?{{ query_string.urlencode }}{% endif %}">{% csrf_token %}<select name="status" aria-label="Update status for order {{ row.object.number }}" onchange="this.form.requestSubmit()">{% for status_value,status_label in status_choices %}<option value="{{ status_value }}"{% if row.object.status == status_value %} selected{% endif %}>{{ status_label }}</option>{% endfor %}</select></form>{% elif model_key == 'custom-requests' and forloop.counter == 6 %}<form class="inline-order-status-form" method="post" action="{% url 'store:custom_request_status_update' row.object.pk %}{% if query_string.urlencode %}?{{ query_string.urlencode }}{% endif %}">{% csrf_token %}<select name="status" aria-label="Update status for custom request {{ row.object.pk }}" onchange="this.form.submit()">{% for status_value,status_label in custom_request_status_choices %}<option value="{{ status_value }}"{% if row.object.status == status_value %} selected{% endif %}>{{ status_label }}</option>{% endfor %}</select></form>{% else %}{{ value|default:"—" }}{% endif %}</td>{% endfor %}{% if model_key == 'orders' %}<td><div class="order-product-list">{% for product in row.order_products %}{% if product.has_stock %}<div class="order-product-entry"><span class="{% if product.stock_qty < 10 %}order-low-stock{% else %}order-stock-count{% endif %}">{% if product.stock_qty < 10 %}<i class="fa-solid fa-triangle-exclamation"></i> Low stock: {% endif %}{{ product.stock_qty }}</span></div>{% endif %}{% empty %}<span>—</span>{% endfor %}</div></td>{% endif %}<td><div class="staff-row-actions{% if model_key == 'orders' %} order-row-actions{% elif model_key == 'custom-requests' %} custom-request-row-actions{% endif %}">{% if model_key == 'custom-requests' and row.object.status == 'pending' %}<form method="post" action="{% url 'store:custom_request_status' row.object.pk 'resolved' %}">{% csrf_token %}<button class="btn btn-accent btn-sm" type="submit" aria-label="Accept request" title="Accept"><i class="fa-solid fa-check"></i></button></form><form method="post" action="{% url 'store:custom_request_status' row.object.pk 'postponed' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit" aria-label="Deny request" title="Deny"><i class="fa-solid fa-xmark"></i></button></form>{% endif %}{% if can_edit %}<a class="btn btn-ghost btn-sm" href="{% url 'store:manage_edit' model_key row.object.pk %}" aria-label="Edit record" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>{% endif %}{% if can_delete %}<form method="post" class="{% if model_key == 'products' %}product-delete-form{% endif %}" action="{% url 'store:manage_delete' model_key row.object.pk %}?{{ query_string.urlencode }}{% if query_string.urlencode %}&amp;{% endif %}page={{ page_obj.number }}">{% csrf_token %}<button class="btn btn-ghost btn-sm staff-delete-button" type="submit" aria-label="Delete record" title="Delete"><i class="fa-solid fa-trash-can"></i></button></form>{% endif %}{% if model_key == 'custom-requests' and row.object.status == 'resolved' %}<a class="btn btn-accent btn-sm" href="{% url 'store:custom_request_receipt' row.object.pk %}" target="_blank" rel="noopener"><i class="fa-solid fa-print"></i> Print</a>{% endif %}{% if model_key == 'orders' %}{% if row.object.payment_method == 'raast' and not row.object.payment_confirmed and row.object.status == 'pending' %}<button class="btn btn-accent btn-sm" type="button" data-raast-dialog="raastConfirm{{ row.object.pk }}"><i class="fa-solid fa-check"></i> Raast pay</button><dialog class="raast-confirm-dialog" id="raastConfirm{{ row.object.pk }}" aria-labelledby="raastConfirmTitle{{ row.object.pk }}"><div class="raast-confirm-heading"><span class="eyebrow">PAYMENT VERIFICATION</span><button type="button" class="raast-dialog-close" data-raast-close aria-label="Close dialog"><i class="fa-solid fa-xmark"></i></button></div><h2 id="raastConfirmTitle{{ row.object.pk }}">Verify Raast payment</h2><p class="raast-confirm-notice">Check your merchant account and confirm that this payment has been received before proceeding.</p><dl class="raast-confirm-details"><div><dt>Order</dt><dd>{{ row.object.number }}</dd></div><div><dt>Customer</dt><dd>{{ row.object.full_name }}</dd></div><div><dt>Phone</dt><dd>{{ row.object.phone }}</dd></div><div><dt>Amount</dt><dd>{{ row.object.total|money }}</dd></div><div><dt>City</dt><dd>{{ row.object.city }}</dd></div></dl><p class="raast-confirm-audit-note">Your staff account will be recorded as the person who verified this payment.</p><div class="raast-confirm-actions"><button type="button" class="btn btn-ghost" data-raast-close>Cancel</button><form method="post" action="{% url 'store:raast_payment_confirm' row.object.pk %}{% if query_string.urlencode %}?{{ query_string.urlencode }}{% endif %}">{% csrf_token %}<button class="btn btn-accent" type="submit">Payment received — confirm order</button></form></div></dialog>{% endif %}<a class="btn btn-accent btn-sm" href="{% url 'store:order_receipt' row.object.pk %}" target="_blank" rel="noopener"><i class="fa-solid fa-print"></i> Print receipt</a>{% endif %}</div></td></tr>
+          {% empty %}<tr><td colspan="{{ column_count }}" class="dashboard-empty">No matching records.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="staff-pagination" aria-label="Pagination">
+      {% if page_obj.has_previous %}<a class="btn btn-ghost btn-sm" href="?{{ query_string.urlencode }}&amp;page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left"></i> Previous</a>{% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}<a class="btn btn-ghost btn-sm" href="?{{ query_string.urlencode }}&amp;page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-arrow-right"></i></a>{% endif %}
+    </nav>
+    {% endif %}
+  </div>
+</section>
+{% if model_key == 'products' %}
+<div class="product-delete-modal" id="productDeleteModal" hidden role="dialog" aria-modal="true" aria-labelledby="productDeleteTitle" aria-describedby="productDeleteMessage">
+  <div class="product-delete-dialog">
+    <h2 id="productDeleteTitle">Delete product?</h2>
+    <p id="productDeleteMessage">This product will be permanently deleted and cannot be restored.</p>
+    <p class="product-delete-error" id="productDeleteError" role="alert" hidden></p>
+    <div class="product-delete-actions">
+      <button class="btn btn-ghost" id="cancelProductDelete" type="button">Back</button>
+      <button class="btn btn-danger" id="confirmProductDelete" type="button">Delete</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}{% if model_key == 'orders' %}<script>
+document.querySelectorAll('[data-raast-dialog]').forEach((button) => {
+  button.addEventListener('click', () => document.getElementById(button.dataset.raastDialog)?.showModal());
+});
+document.querySelectorAll('.raast-confirm-dialog [data-raast-close]').forEach((button) => {
+  button.addEventListener('click', () => button.closest('dialog')?.close());
+});
+document.querySelectorAll('.raast-confirm-dialog').forEach((dialog) => {
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+});
+const selectAllOrders = document.getElementById('selectAllOrders');
+const selectAllOrdersButton = document.getElementById('selectAllOrdersButton');
+const orderSelections = [...document.querySelectorAll('.order-select')];
+const selectAllEligibleOrders = orderSelections.filter((selection) =>
+  !['shipped', 'delivered', 'cancelled'].includes(selection.dataset.status)
+);
+function setOrderSelections(checked) {
+  if (checked) {
+    selectAllEligibleOrders.forEach((selection) => { selection.checked = true; });
+  } else {
+    orderSelections.forEach((selection) => { selection.checked = false; });
+  }
+  const allEligibleSelected = selectAllEligibleOrders.length > 0 && selectAllEligibleOrders.every((selection) => selection.checked);
+  if (selectAllOrders) selectAllOrders.checked = allEligibleSelected;
+  if (selectAllOrdersButton) selectAllOrdersButton.textContent = allEligibleSelected ? 'Clear selection' : 'Select all';
+}
+selectAllOrders?.addEventListener('change', () => setOrderSelections(selectAllOrders.checked));
+selectAllOrdersButton?.addEventListener('click', () => {
+  const select = selectAllEligibleOrders.length > 0 && !selectAllEligibleOrders.every((selection) => selection.checked);
+  setOrderSelections(select);
+});
+orderSelections.forEach((selection) => selection.addEventListener('change', () => {
+  const allSelected = selectAllEligibleOrders.length > 0 && selectAllEligibleOrders.every((item) => item.checked);
+  if (selectAllOrders) selectAllOrders.checked = allSelected;
+  if (selectAllOrdersButton) selectAllOrdersButton.textContent = allSelected ? 'Clear selection' : 'Select all';
+}));
+document.getElementById('selectedOrdersForm')?.addEventListener('submit', (event) => {
+  if (!orderSelections.some((selection) => selection.checked)) {
+    event.preventDefault();
+    alert('Select at least one order to print receipts.');
+  }
+});
+
+document.querySelectorAll('.inline-order-status-form').forEach((form) => {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const select = form.querySelector('select[name="status"]');
+    const originalStatus = select.value;
+    const feedback = form.parentElement.querySelector('.order-status-feedback') || document.createElement('span');
+    feedback.className = 'order-status-feedback';
+    feedback.setAttribute('role', 'status');
+    if (!feedback.isConnected) form.insertAdjacentElement('afterend', feedback);
+    const formData = new FormData(form);
+    select.disabled = true;
+    feedback.textContent = 'Saving…';
+    feedback.classList.remove('is-error');
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw Object.assign(new Error(result.error || 'Status update failed.'), { result });
+      feedback.textContent = result.message;
+    } catch (error) {
+      select.value = error.result?.current_status || originalStatus;
+      feedback.textContent = error.message;
+      feedback.classList.add('is-error');
+    } finally {
+      select.disabled = false;
+    }
+  });
+});
+</script>{% elif model_key == 'products' %}<script>
+const deleteModal = document.getElementById('productDeleteModal');
+const confirmDeleteButton = document.getElementById('confirmProductDelete');
+const cancelDeleteButton = document.getElementById('cancelProductDelete');
+const deleteError = document.getElementById('productDeleteError');
+let pendingDeleteForm = null;
+let deleteTrigger = null;
+document.querySelectorAll('.product-delete-form').forEach((form) => {
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    pendingDeleteForm = form;
+    deleteTrigger = form.querySelector('button[type="submit"]');
+    deleteError.hidden = true;
+    deleteModal.hidden = false;
+    confirmDeleteButton.focus();
+  });
+});
+function closeDeleteModal() {
+  deleteModal.hidden = true;
+  if (deleteTrigger?.isConnected) deleteTrigger.focus();
+  pendingDeleteForm = null;
+}
+cancelDeleteButton.addEventListener('click', closeDeleteModal);
+deleteModal.addEventListener('click', (event) => {
+  if (event.target === deleteModal) closeDeleteModal();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !deleteModal.hidden) closeDeleteModal();
+});
+confirmDeleteButton.addEventListener('click', async () => {
+  if (!pendingDeleteForm) return;
+  const form = pendingDeleteForm;
+  const row = form.closest('tr');
+  confirmDeleteButton.disabled = true;
+  cancelDeleteButton.disabled = true;
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success) throw new Error(result.error || 'Product could not be deleted. Please try again.');
+    row.remove();
+    const count = document.querySelector('.dashboard-lede');
+    const remainingCount = count ? Math.max(0, Number.parseInt(count.textContent, 10) - 1) : 0;
+    if (count) count.textContent = `${remainingCount} records`;
+    if (remainingCount === 0) {
+      const body = document.querySelector('.staff-data-table tbody');
+      body.innerHTML = '<tr><td colspan="{{ column_count }}" class="dashboard-empty">No matching records.</td></tr>';
+    }
+    deleteModal.hidden = true;
+    pendingDeleteForm = null;
+  } catch (error) {
+    deleteError.textContent = error.message;
+    deleteError.hidden = false;
+  } finally {
+    confirmDeleteButton.disabled = false;
+    cancelDeleteButton.disabled = false;
+  }
+});
+</script>{% elif model_key == 'feedback' %}<script>
+document.querySelectorAll('.staff-row-actions form').forEach((form) => {
+  form.addEventListener('submit', (event) => {
+    if (!window.confirm('Delete this customer feedback?')) event.preventDefault();
+  });
+});
+</script>{% elif model_key == 'subscribers' %}<script>
+const copyEmailsButton = document.getElementById('copySubscriberEmails');
+const subscriberEmailList = document.getElementById('subscriberEmailList');
+const subscriberEmailStatus = document.getElementById('subscriberEmailStatus');
+copyEmailsButton?.addEventListener('click', async () => {
+  subscriberEmailList.hidden = false;
+  subscriberEmailList.select();
+  try {
+    await navigator.clipboard.writeText(subscriberEmailList.value);
+    subscriberEmailStatus.textContent = 'All subscriber emails copied. Paste them into your email recipients.';
+  } catch {
+    document.execCommand('copy');
+    subscriberEmailStatus.textContent = 'Email list ready below. Select and copy it to paste into your email recipients.';
+  }
+});
+</script>{% endif %}{% endblock %}

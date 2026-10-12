@@ -1,0 +1,1 @@
+web: python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py add_pairs && python manage.py setup_roles && python manage.py seed_media && exec gunicorn markx.wsgi --bind 0.0.0.0:$PORT --workers 3 --timeout 60

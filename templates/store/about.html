@@ -1,0 +1,16 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% block title %}Our Story | MarkX Collections{% endblock %}
+{% block desc %}Discover MarkX Collections: men's shirts, trousers and pairs, selected for everyday wear in Pakistan.{% endblock %}
+{% block content %}
+<section class="about-hero">
+  <div class="container about-hero-inner">
+    <div><span class="eyebrow">MEN'S CLOTHING · DESIGNED IN PAKISTAN</span><h1>{% if request.session.site_language == 'ur' %}Wear your<br><em>mindset.</em>{% else %}Wear<br><em>Your</em>&nbsp;<span>Mindset.</span>{% endif %}</h1><p>Everyday shirts, versatile trousers and coordinated pairs, chosen for comfort and considered fit.</p><a class="btn btn-accent btn-arrow" href="{% url 'store:shop' %}">Explore the collection <i class="fa-solid fa-arrow-right"></i></a></div>
+    <div class="about-hero-art"><img src="{% static 'img/sharp.png' %}" alt="MarkX men's clothing collection"></div>
+  </div>
+</section>
+<section class="section about-story"><div class="container about-story-grid">
+  <div><span class="eyebrow">WHO WE ARE</span><h2>Made for your<br>everyday moves.</h2></div>
+  <div><p class="lede">MarkX brings together men's shirts, trousers and pairs for workdays, weekends and everything between.</p><a class="text-link" href="{% url 'store:contact' %}">Get in touch <i class="fa-solid fa-arrow-right"></i></a></div>
+</div></section>
+{% endblock %}

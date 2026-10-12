@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Custom request {{ custom_request.pk }} | MarkX Collections</title>
+  <style>
+    @page { size: A4 portrait; margin: 0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #eee; color: #111; font: 12px/1.4 Arial, sans-serif; }
+    .receipt { width: 210mm; height: 148.5mm; margin: 20px auto; padding: 9mm 14mm; background: #fff; overflow: hidden; column-count: 2; column-gap: 12mm; }
+    .receipt > header, .receipt > hr:first-of-type { column-span: all; }
+    .center { text-align: center; }
+    h1 { margin: 0; font-size: 17px; }
+    h2 { margin: 3px 0 10px; font-size: 12px; font-weight: 400; }
+    .rule { border: 0; border-top: 1px dashed #444; margin: 8px 0; }
+    .row { display: flex; justify-content: space-between; gap: 6px; margin: 4px 0; }
+    .value { overflow-wrap: anywhere; text-align: right; }
+    .design { display: block; max-width: 100%; max-height: 40mm; margin: 8px auto; object-fit: contain; }
+    .actions { width: 210mm; max-width: 100%; margin: 12px auto; text-align: center; }
+    .actions button { padding: 9px 15px; }
+    @media print { body { background: #fff; } .receipt { margin: 0; } .actions { display: none; } }
+  </style>
+</head>
+<body>
+  <main class="receipt">
+    <header class="center"><h1>MARKX COLLECTIONS</h1><h2>ACCEPTED CUSTOM REQUEST</h2></header>
+    <hr class="rule">
+    <div class="row"><strong>Request</strong><span>#{{ custom_request.pk }}</span></div>
+    <div class="row"><strong>Date</strong><span>{{ custom_request.created|date:"d M Y, H:i" }}</span></div>
+    <div class="row"><strong>Status</strong><span>{{ custom_request.get_status_display }}</span></div>
+    <hr class="rule">
+    <strong>CUSTOMER</strong>
+    <div class="row"><span>Name</span><span class="value">{{ custom_request.name }}</span></div>
+    <div class="row"><span>Phone</span><span class="value">{{ custom_request.phone }}</span></div>
+    {% if custom_request.email %}<div class="row"><span>Email</span><span class="value">{{ custom_request.email }}</span></div>{% endif %}
+    <hr class="rule">
+    <strong>REQUEST DETAILS</strong>
+    <div class="row"><span>Item</span><span class="value">{{ custom_request.tshirt_type|default:"—" }}</span></div>
+    <div class="row"><span>Color</span><span class="value">{{ custom_request.color|default:"—" }}</span></div>
+    <div class="row"><span>Size</span><span class="value">{{ custom_request.size|default:"—" }}</span></div>
+    <div class="row"><span>Quantity</span><span class="value">{{ custom_request.quantity }}</span></div>
+    <div class="row"><span>Placement</span><span class="value">{{ custom_request.placement|default:"—" }}</span></div>
+    {% if custom_request.custom_text %}<div class="row"><span>Custom text</span><span class="value">{{ custom_request.custom_text }}</span></div>{% endif %}
+    {% if custom_request.notes %}<p><strong>Notes:</strong> {{ custom_request.notes }}</p>{% endif %}
+    {% if custom_request.design_file %}<hr class="rule"><strong>DESIGN</strong><img class="design" src="{{ custom_request.design_file.url }}" alt="Uploaded design">{% endif %}
+    <hr class="rule">
+    <p class="center">Thank you for your custom request</p>
+  </main>
+  <div class="actions"><button onclick="window.print()">Print request</button></div>
+  <script>window.addEventListener('load', () => setTimeout(() => window.print(), 350));</script>
+</body>
+</html>

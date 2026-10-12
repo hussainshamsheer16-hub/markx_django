@@ -1,0 +1,29 @@
+{% extends "store/base.html" %}{% load mx %}
+{% block title %}Checkout | MarkX Collections{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container"><span class="eyebrow">ALMOST THERE</span><h1>Checkout</h1></div></section>
+<section class="section"><div class="container checkout-grid">
+  <form method="post" novalidate>{% csrf_token %}
+    <h3 style="margin-bottom:20px">Delivery details</h3>
+    <div class="form-grid">
+      {% include "store/_field.html" with field=form.full_name %}{% include "store/_field.html" with field=form.phone %}
+      {% include "store/_field.html" with field=form.email %}{% include "store/_field.html" with field=form.city %}
+      {% include "store/_field.html" with field=form.address extra="full" %}{% include "store/_field.html" with field=form.notes extra="full" %}
+    </div>
+    <h3 style="margin:14px 0 16px">Payment</h3>
+    <label class="radio-card {% if form.payment_method.value == 'cod' %}selected{% endif %}"><input type="radio" name="payment_method" value="cod" {% if form.payment_method.value == 'cod' %}checked{% endif %}><div><strong>Cash on delivery</strong><span class="small">Pay when your order arrives.</span></div></label>
+    <label class="radio-card {% if form.payment_method.value == 'raast' %}selected{% endif %}"><input type="radio" name="payment_method" value="raast" {% if form.payment_method.value == 'raast' %}checked{% endif %}><div><strong>Raast</strong><span class="small">Pay by bank transfer. Your order is processed after we receive payment.</span></div></label>
+    <label class="radio-card {% if form.payment_method.value == 'card' %}selected{% endif %}"><input type="radio" name="payment_method" value="card" {% if form.payment_method.value == 'card' %}checked{% endif %}><div><strong>Credit or debit card</strong><span class="small">Secure payment through Stripe. No card discount applies.</span></div></label>
+    <button class="btn btn-accent btn-block btn-arrow" type="submit" style="margin-top:14px">Place order <i class="fa-solid fa-arrow-right"></i></button>
+  </form>
+  <aside class="cart-side"><h3 style="margin-bottom:14px">Your order</h3>
+    {% for l in lines %}<div class="checkout-summary-item"><span>{{ l.qty }} × {{ l.product.name }} <small style="color:#8a8a80">({{ l.size }}, {{ l.color }})</small></span><span>{{ l.total|money }}</span></div>{% endfor %}
+    <div class="sum-row"><span>Subtotal</span><span>{{ totals.subtotal|money }}</span></div><div class="sum-row"><span>Delivery</span><span>{% if totals.delivery %}{{ totals.delivery|money }}{% else %}FREE{% endif %}</span></div><div class="sum-row total"><span>Total</span><span>{{ totals.total|money }}</span></div>
+    {% if raast_iban %}<p class="admin-sub">Raast account: {{ raast_account_title }} · {{ raast_iban }}</p>{% endif %}
+  </aside>
+</div></section>
+{% endblock %}
+{% block scripts %}<script>
+function sync(){document.querySelectorAll('.radio-card').forEach(r=>r.classList.toggle('selected',r.querySelector('input').checked));}
+document.querySelectorAll('input[name=payment_method]').forEach(i=>i.addEventListener('change',sync));sync();
+</script>{% endblock %}

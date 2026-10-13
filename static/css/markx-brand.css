@@ -34,6 +34,8 @@ body{padding-top:106px}
 .btn-accent:hover{background:#000;border-color:#000;color:#fff}
 .site-footer .footer-newsletter-form button{background:#fff;color:#000}
 .site-footer .footer-newsletter-form button:hover{background:#fff;color:#000}
+.site-footer .footer-newsletter-form:has(input:hover) button,
+.site-footer .footer-newsletter-form:has(input:focus) button{background:#000;color:#fff}
 .btn-ghost-light{display:inline-flex;align-items:center;justify-content:center;padding:14px 26px;border:1.5px solid #fff;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:.82rem}
 .btn-ghost-light:hover{background:#fff;color:#000}
 .wa-float{background:#25D366}
@@ -144,6 +146,11 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
 }
 @media(max-width:360px){.product-grid,.shop-grid{grid-template-columns:1fr!important}}
 
+@media(max-width:860px){
+  body.urdu-mode #mobileNav>a:nth-of-type(1),
+  body.urdu-mode #mobileNav>a:nth-of-type(5){direction:rtl!important;text-align:right!important}
+}
+
 /* Urdu mobile hero: keep copy and the transparent product cutout in separate,
    naturally sized columns so neither is clipped at narrow phone widths. */
 @media(max-width:760px){
@@ -152,7 +159,7 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
     height:auto!important;
     min-height:0!important;
     overflow:visible!important;
-    padding:16px 0 76px!important;
+    padding:12px 0 36px!important;
   }
   body.urdu-mode #heroCarousel > .hero-slide > .container{
     box-sizing:border-box;
@@ -186,7 +193,7 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
     display:block;
     width:auto!important;
     max-width:100%!important;
-    margin:0 0 8px;
+    margin:0;
     font-size:clamp(.62rem,2.8vw,.78rem)!important;
     line-height:1.7!important;
     text-align:right;
@@ -198,10 +205,10 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
     width:auto!important;
     max-width:100%!important;
     min-width:0;
-    margin:0 0 12px!important;
-    padding:0 0 14px!important;
+    margin:0!important;
+    padding:0!important;
     font-size:clamp(1.2rem,6.2vw,1.8rem)!important;
-    line-height:2.2!important;
+    line-height:1.55!important;
     text-align:right!important;
     white-space:normal;
     overflow-wrap:anywhere;
@@ -220,9 +227,9 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
     display:block!important;
     width:auto!important;
     max-width:100%!important;
-    margin:0 0 12px!important;
+    margin:0!important;
     font-size:clamp(.67rem,3.15vw,.82rem)!important;
-    line-height:1.8!important;
+    line-height:1.55!important;
     text-align:right;
     overflow-wrap:anywhere;
   }
@@ -255,15 +262,23 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
   }
   /* The earlier main-slide overrides are more specific, so restate the
      mobile flow rules here for that slide to keep its copy in normal flow. */
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content{position:relative!important;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content{position:relative!important;top:16px!important;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important}
   body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .eyebrow{position:static!important;top:auto!important;right:auto!important;left:auto!important}
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content h1{position:static!important;top:auto!important;right:auto!important;left:auto!important;width:auto!important;max-width:100%!important;margin:0 0 12px!important;padding:0 0 14px!important;font-size:clamp(1.2rem,6.2vw,1.8rem)!important;line-height:2.2!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content h1{position:static!important;top:auto!important;right:auto!important;left:auto!important;width:auto!important;max-width:100%!important;margin:0!important;padding:0!important;font-size:clamp(1.5rem,7.5vw,2.1rem)!important;line-height:1.8!important}
   body.urdu-mode #heroCarousel > .hero-slide--main .hero-content h1 .hero-heading-identity{line-height:inherit!important}
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .lede{position:static!important;display:block!important;width:auto!important;max-width:100%!important;margin:0 0 12px!important;font-size:clamp(.67rem,3.15vw,.82rem)!important;line-height:1.8!important}
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .hero-btns{position:static!important;top:auto!important;right:auto!important;bottom:auto!important;width:100%!important;max-width:100%;margin:0!important;justify-content:flex-start!important}
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .hero-btns .btn{width:min(100%,150px)!important;max-width:100%;min-width:0!important;margin:0!important;padding:7px 9px!important}
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-art{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;min-height:0!important;margin:0!important;overflow:visible!important}
-  body.urdu-mode #heroCarousel > .hero-slide--main .hero-art img{display:block;width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;object-fit:contain!important;object-position:center bottom!important;transform:none!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .lede{position:static!important;display:block!important;width:auto!important;max-width:100%!important;margin:0!important;font-size:clamp(.67rem,3.15vw,.82rem)!important;line-height:1.8!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .hero-btns{position:static!important;top:auto!important;right:auto!important;bottom:auto!important;direction:ltr!important;width:100%!important;max-width:100%;margin:0!important;justify-content:flex-end!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-content .hero-btns .btn{width:min(100%,125px)!important;max-width:100%;min-width:0!important;margin:0!important;padding:7px 9px!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-art{position:relative!important;inset:auto!important;align-self:end!important;width:100%!important;height:auto!important;min-height:0!important;margin:0 0 -72px!important;overflow:visible!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-art img{display:block;width:135%!important;height:auto!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center bottom!important;transform:scale(1.1) translateX(-10px)!important;transform-origin:center bottom!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-content{position:relative!important;top:16px!important;display:flex!important;flex-direction:column;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;text-align:right!important;direction:rtl}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-content .eyebrow{position:static!important;margin:0!important;line-height:1.7!important;text-align:right!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-content h1{position:static!important;width:auto!important;max-width:100%!important;margin:0!important;padding:0!important;font-size:clamp(1.5rem,7.5vw,2.1rem)!important;line-height:1.8!important;text-align:right!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-content .lede{position:static!important;display:block!important;width:auto!important;max-width:100%!important;margin:0!important;font-size:clamp(.67rem,3.15vw,.82rem)!important;line-height:1.8!important;text-align:right!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-content .hero-btns{position:static!important;direction:ltr!important;width:100%!important;max-width:100%;margin:0!important;justify-content:flex-end!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-content .hero-btns .btn{width:min(100%,125px)!important;max-width:100%;min-width:0!important;margin:0!important;padding:7px 9px!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-art{align-self:end!important;margin:0 0 -72px!important}
+  body.urdu-mode #heroCarousel > .hero-slide:not(.hero-slide--main) .hero-art img{width:125%!important;max-width:none!important;transform:scale(1.08) translateX(-6px)!important;transform-origin:center bottom!important}
   body.urdu-mode #heroCarousel > .hero-slide--custom .hero-art,
   body.urdu-mode #heroCarousel > .hero-slide:nth-child(3) .hero-art,
   body.urdu-mode #heroCarousel > .hero-slide:nth-child(4) .hero-art,
@@ -296,6 +311,22 @@ body.urdu-mode #heroCarousel .hero-content .hero-btns .btn{margin-inline-start:a
     object-position:center bottom!important;
     transform:none!important;
   }
+  body.urdu-mode #heroCarousel .hero-art picture{display:block;width:100%;height:100%}
+  body.urdu-mode #heroCarousel > .hero-slide .hero-art{align-self:end!important;height:min(72vw,310px)!important;margin:0 0 -48px!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-art,
+  body.urdu-mode #heroCarousel > .hero-slide--custom .hero-art,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(3) .hero-art,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(4) .hero-art,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(5) .hero-art{height:min(72vw,310px)!important;margin:0 0 -48px!important}
+  body.urdu-mode #heroCarousel > .hero-slide--main .hero-art img,
+  body.urdu-mode #heroCarousel > .hero-slide--custom .hero-art img,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(3) .hero-art img,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(4) .hero-art img,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(5) .hero-art img{width:135%!important;height:100%!important;max-width:none!important;object-fit:contain!important;transform:scale(1.08) translateX(-6px)!important;transform-origin:center bottom!important}
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(3) .hero-art img,
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(5) .hero-art img{transform:scale(1.08) translateX(-16px)!important}
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(3):not(.hero-slide--main):not(.hero-slide--custom):not(:nth-child(4)) .hero-art img{position:relative!important;top:10%!important;width:110%!important;height:90%!important;max-height:none!important;transform:scale(1.08) translateX(-16px)!important}
+  body.urdu-mode #heroCarousel > .hero-slide:nth-child(5):not(.hero-slide--main):not(.hero-slide--custom):not(:nth-child(4)) .hero-art img{width:120%!important;transform:scale(1.08) translateX(-16px)!important}
   body.urdu-mode #heroCarousel .hero-benefits,
   body.urdu-mode #heroCarousel .hero-aside{display:none!important}
   body.urdu-mode #heroCarousel .hero-controls{

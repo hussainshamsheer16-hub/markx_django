@@ -4,7 +4,7 @@
 <section class="page-head dashboard-page-head{% if model_key == 'products' %} staff-product-page-head{% endif %}">
   <div class="container dashboard-heading">
     <div><span class="eyebrow"><a href="{% url 'store:manage_model' model_key %}">{{ spec.title|upper }}</a> {% if model_key == 'products' and instance %}/ #{{ instance.pk }}{% endif %}</span><h1>{% if is_create %}Add {{ singular_title }}{% elif model_key == 'products' %}Edit product{% else %}Edit record{% endif %}</h1>{% if model_key == 'products' %}<p class="dashboard-lede">{% if is_create %}Add product details, pricing, inventory, and storefront visibility.{% else %}Update product details, pricing, inventory, and storefront visibility.{% endif %}</p>{% endif %}</div>
-    <a class="btn btn-ghost staff-back-button" href="{% url 'store:manage_model' model_key %}" aria-label="Back to {{ spec.title }}" title="Back to {{ spec.title }}"><i class="fa-solid fa-arrow-left"></i>{% if model_key != 'products' %} Back to {{ spec.title }}{% endif %}</a>
+    <a class="btn btn-ghost staff-back-button" href="{% url 'store:manage_model' model_key %}" aria-label="Back to {{ spec.title }}" title="Back to {{ spec.title }}"><i class="fa-solid fa-arrow-left"></i></a>
   </div>
 </section>
 <section class="section dashboard-section staff-form-section">

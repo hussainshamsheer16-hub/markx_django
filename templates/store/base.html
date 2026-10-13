@@ -15,8 +15,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
 <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16.png' %}">
 <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
-<link rel="stylesheet" href="{% static 'css/style.css' %}?v=116">
-<link rel="stylesheet" href="{% static 'css/markx-brand.css' %}?v=40">
+<link rel="stylesheet" href="{% static 'css/style.css' %}?v=143">
+<link rel="stylesheet" href="{% static 'css/markx-brand.css' %}?v=59">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% block head %}{% endblock %}
 </head>
@@ -70,6 +70,7 @@
 <div class="mobile-nav" id="mobileNav">
   <div class="mobile-nav-top"><a href="{% url 'store:home' %}" class="logo" aria-label="MarkX Collection"><img class="brand-logo" src="{% static 'img/logo.png' %}" alt="MarkX Collection"></a><button class="icon-btn" id="mobileNavClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
   <a href="{% url 'store:home' %}">Home</a><a href="{% url 'store:shop' %}">Shop</a><a href="{% url 'store:customize' %}">Customize</a><a href="{% url 'store:bulk' %}">Bulk Orders</a><a href="{% url 'store:about' %}">About</a><a href="{% url 'store:contact' %}">Contact</a><a href="{% url 'store:cart' %}">Cart</a>{% if user.is_staff or user.is_superuser %}<a href="{% url 'store:dashboard' %}">Dashboard</a>{% endif %}
+  <form method="post" action="{% url 'store:set_language' %}" class="language-form mobile-language-form">{% csrf_token %}<input type="hidden" name="language" value="{% if request.session.site_language == 'ur' %}en{% else %}ur{% endif %}"><input type="hidden" name="next" value="{{ request.get_full_path }}"><button type="submit" class="language-toggle" aria-label="Switch language">{% if request.session.site_language == 'ur' %}English{% else %}اردو{% endif %}</button></form>
 </div>
 
 {% if messages %}<div class="toast-stack" id="djMessages">{% for m in messages %}<div class="toast show {{ m.tags }}"><i class="fa-solid {% if m.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i> {{ m }}</div>{% endfor %}</div>{% endif %}
@@ -80,7 +81,7 @@
   <div class="container footer-main">
     <div><a href="{% url 'store:home' %}" class="logo" aria-label="MarkX Collection"><img class="brand-logo" src="{% static 'img/logo.png' %}" alt="MarkX Collection"></a></div>
     <nav class="footer-nav" aria-label="Footer"><a href="{% url 'store:home' %}">Home</a><a href="{% url 'store:shop' %}">Shop</a><a href="{% url 'store:about' %}">About</a><a href="{% url 'store:contact' %}">Contact</a></nav>
-    <div class="footer-social"><a href="https://www.instagram.com/markxcollectionsofficial/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="https://www.tiktok.com/@markxcollections?lang=en" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a><a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a><a href="https://www.facebook.com/profile.php?id=61595227681398" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></div>
+    <div class="footer-social"><a href="https://www.instagram.com/markxcollectionsofficial/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="https://www.tiktok.com/@markxcollections?lang=en" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a><a href="https://www.youtube.com/@Markxcollections-s2o" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a><a href="https://www.facebook.com/profile.php?id=61595227681398" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></div>
   </div>
   <div class="container footer-links">
     <div><h4>SHOP</h4><a href="{% url 'store:shop' %}">All Products</a>{% for category in shop_categories %}<a href="{% url 'store:shop' %}?category={{ category.slug }}">{{ category.name }}</a>{% endfor %}</div>

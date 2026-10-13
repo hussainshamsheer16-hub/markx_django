@@ -72,6 +72,10 @@ STAFF_MANAGEMENT_MODELS = {
         "filters": {"show_on_home": (("true", "On homepage"), ("false", "Hidden"))},
         "form_fields": ("name", "slug", "tagline", "image", "show_on_home", "order"),
         "ordering": ("order", "name"),
+        "can_add": True,
+        "can_edit": True,
+        "can_delete": True,
+        "staff_can_delete": False,
     },
     "orders": {
         "title": "Orders",
@@ -876,16 +880,21 @@ def about(request):
 
 def leave_comment(request):
     initial = {}
+    profile_name = None
     if request.user.is_authenticated:
-        initial["name"] = request.user.get_full_name().strip() or request.user.get_username()
+        profile_name = request.user.get_full_name().strip() or request.user.get_username()
+        initial["name"] = profile_name.upper()
     form = CommentForm(request.POST or None, initial=initial)
+    if request.user.is_authenticated:
+        form.fields["name"].disabled = True
     if request.method == "POST" and form.is_valid():
         comment = form.save(commit=False)
         if request.user.is_authenticated:
             comment.user = request.user
+            comment.name = profile_name.upper()
         comment.save()
         messages.success(request, "Thanks! Your comment has been added.")
-        return redirect("store:about")
+        return redirect(f"{reverse('store:home')}#homeFeedback")
     return render(request, "store/comment_form.html", {"form": form})
 
 
@@ -1280,7 +1289,7 @@ def staff_workspace(request):
             "can_add": spec.get("can_add", True),
         }
         for key, spec in STAFF_MANAGEMENT_MODELS.items()
-        if request.user.is_superuser or key not in {"categories", "subscribers"}
+        if request.user.is_superuser or key != "subscribers"
     ]
     return render(request, "store/staff_workspace.html", {"sections": sections})
 
@@ -1674,9 +1683,6 @@ def staff_model_edit(request, model_key, pk=None):
     if not request.user.is_superuser and model_key in {"subscribers", "coupons", "users", "roles"}:
         from django.core.exceptions import PermissionDenied
         raise PermissionDenied
-    if not request.user.is_superuser and model_key == "categories" and request.method == "POST":
-        from django.core.exceptions import PermissionDenied
-        raise PermissionDenied
     spec = _staff_management_spec(model_key)
     model = spec["model"]
     is_create = pk is None
@@ -1693,8 +1699,6 @@ def staff_model_edit(request, model_key, pk=None):
     ]
     if not request.user.is_superuser:
         form_fields = [field for field in form_fields if field not in {"cost_price", "shipping_cost", "payment_confirmed_by"}]
-    if isinstance(model, Category) and instance and instance.name.strip().casefold() not in {"shirts", "trousers"}:
-        form_fields = [field for field in form_fields if field not in {"image", "show_on_home"}]
     form_class = modelform_factory(model, fields=form_fields)
     form = form_class(request.POST or None, request.FILES or None, instance=instance)
     if is_create and isinstance(model, Product):
